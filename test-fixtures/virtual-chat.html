@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>Имитация виртуализированного чата</title>
+    <style>
+      body { margin: 0; font-family: "Segoe UI", sans-serif; background: #ece5dd; color: #1f2c28; }
+      header { padding: 16px 20px; background: #128c7e; color: white; }
+      header p { margin: 6px 0 0; max-width: 760px; }
+      main { display: grid; grid-template-columns: 280px 1fr; height: calc(100vh - 92px); }
+      aside { background: white; border-right: 1px solid #d7e3df; padding: 12px; }
+      #log { overflow: auto; background: #efeae2; position: relative; }
+      .row { padding: 8px 16px; }
+      .day { text-align: center; color: #546963; font-size: 13px; }
+      .bubble { display: inline-block; max-width: 70%; background: white; border-radius: 8px; padding: 8px 10px; }
+      #status { padding: 8px 12px; background: #fff; border-top: 1px solid #d7e3df; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <strong>Имитация виртуализированного чата</strong>
+      <p>
+        Это не WhatsApp Web и не проверка совместимости расширения. Страница показывает ленивую подгрузку:
+        в DOM есть только видимое окно сообщений, а старые строки появляются после прокрутки к верху.
+      </p>
+    </header>
+    <main>
+      <aside>
+        <strong>Список чатов</strong>
+        <p>Эта колонка не должна прокручиваться архиватором.</p>
+      </aside>
+      <section>
+        <div id="log"></div>
+        <div id="status"></div>
+      </section>
+    </main>
+    <script>
+      const total = 400
+      const windowSize = 18
+      const loadBatch = 40
+      let loadedFrom = total - 80
+      let view = total - windowSize
+      const log = document.getElementById('log')
+      const status = document.getElementById('status')
+      log.style.height = '560px'
+
+      function dateFor(index) {
+        const day = 1 + (Math.floor(index / 12) % 28)
+        const month = 1 + (Math.floor(index / (12 * 28)) % 12)
+        return String(day).padStart(2, '0') + '.' + String(month).padStart(2, '0') + '.2026'
+      }
+
+      function render() {
+        const slice = []
+        const end = Math.min(total, view + windowSize)
+        for (let absolute = view; absolute < end; absolute += 1) {
+          slice.push({ absolute, date: dateFor(absolute) })
+        }
+        log.innerHTML = slice
+          .map((item, index) => {
+            const day = index === 0 || slice[index - 1].date !== item.date
+              ? '<div class="row day">' + item.date + '</div>'
+              : ''
+            return day + '<div class="row" data-id="m' + item.absolute + '"><div class="bubble">Сообщение ' + item.absolute + '</div></div>'
+          })
+          .join('')
+        log.scrollTop = 40
+        status.textContent = 'В DOM строки с #' + view + '. Загруженная история с #' + loadedFrom + '. Прокрутите вверх.'
+      }
+
+      log.addEventListener('scroll', () => {
+        if (log.scrollTop > 8) return
+        const step = Math.max(1, Math.round(windowSize * 0.82))
+        if (view > loadedFrom) {
+          view = Math.max(loadedFrom, view - step)
+          render()
+          return
+        }
+        if (loadedFrom === 0) {
+          status.textContent = 'Достигнуто начало имитации истории.'
+          return
+        }
+        loadedFrom = Math.max(0, loadedFrom - loadBatch)
+        view = Math.max(loadedFrom, view - step)
+        render()
+      })
+
+      render()
+    </script>
+  </body>
+</html>

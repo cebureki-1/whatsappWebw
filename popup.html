@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WhatsApp Chat Archive</title>
+    <link rel="stylesheet" href="/src/popup/popup.css" />
+  </head>
+  <body>
+    <main class="card">
+      <header class="head">
+        <h1>Архив чата WhatsApp</h1>
+        <p>Снимки выбранной переписки сохраняются только на этом компьютере.</p>
+      </header>
+      <form id="form">
+        <label>
+          Дата начала
+          <input id="start" name="start" type="date" required />
+        </label>
+        <label>
+          Дата окончания
+          <input id="end" name="end" type="date" />
+        </label>
+        <label>
+          Формат
+          <select id="format" name="format">
+            <option value="pdf">PDF</option>
+            <option value="zip">ZIP</option>
+            <option value="both">PDF и ZIP</option>
+          </select>
+        </label>
+        <label>
+          Название архива
+          <input id="name" name="name" type="text" maxlength="80" placeholder="WhatsApp-чат" />
+        </label>
+        <div class="actions">
+          <button id="start-btn" type="submit">Начать архивирование</button>
+          <button id="pause-btn" type="button">Пауза</button>
+          <button id="resume-btn" type="button">Продолжить</button>
+          <button id="stop-btn" type="button" class="danger">Остановить</button>
+          <button id="download-btn" type="button" class="secondary">Скачать результат</button>
+        </div>
+      </form>
+      <section class="status" aria-live="polite">
+        <p><span class="label">Этап:</span> <strong id="phase">Ожидание</strong></p>
+        <p><span class="label">Сохранено кадров:</span> <strong id="frames">0</strong></p>
+        <p id="hint" class="hint" hidden></p>
+        <p id="error" class="error" hidden></p>
+        <ul id="warnings"></ul>
+        <details id="diagnostics" hidden>
+          <summary>Диагностика страницы</summary>
+          <ul id="diagnostics-list"></ul>
+        </details>
+      </section>
+      <footer class="foot">
+        <button id="tab-btn" type="button" class="link">Открыть в отдельной вкладке</button>
+        <button id="delete-btn" type="button" class="link">Удалить временные данные</button>
+        <p>Это локальная копия снимков экрана. Архив не подтверждает подлинность переписки и не имеет юридической силы.</p>
+      </footer>
+    </main>
+    <script type="module" src="/src/popup/popup.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "WhatsApp Chat Archive",
+  "version": "1.0.0",
+  "description": "Локальный архив выбранной переписки WhatsApp Web: скриншоты области сообщений в PDF и ZIP.",
+  "action": {
+    "default_title": "WhatsApp Chat Archive",
+    "default_popup": "dist/popup.html",
+    "default_icon": {
+      "16": "dist/icons/icon16.png",
+      "32": "dist/icons/icon32.png"
+    }
+  },
+  "icons": {
+    "16": "dist/icons/icon16.png",
+    "32": "dist/icons/icon32.png",
+    "48": "dist/icons/icon48.png",
+    "128": "dist/icons/icon128.png"
+  },
+  "background": {
+    "service_worker": "dist/service-worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": ["dist/content-script.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": ["activeTab", "storage", "scripting", "alarms", "offscreen"],
+  "host_permissions": ["https://web.whatsapp.com/*"],
+  "minimum_chrome_version": "116"
+}
